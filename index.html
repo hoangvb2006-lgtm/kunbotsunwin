@@ -2,29 +2,36 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mô Phỏng Tài Xỉu - Đọc Kết Quả</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bot Random Tài Xỉu</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500;700;900&display=swap');
 
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
         body {
-            background-color: #000;
+            background-color: #050505; /* Nền đen sâu tối ưu cho màn hình giảm độ sáng */
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
             font-family: 'Roboto', sans-serif;
             color: #fff;
+            overflow: hidden;
         }
 
         .game-board {
-            background: linear-gradient(180deg, #3a0006 0%, #1a0002 100%);
-            border: 3px solid #d4af37;
-            border-radius: 20px;
-            width: 700px;
-            padding: 20px;
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3), inset 0 0 15px #000;
+            background: linear-gradient(180deg, #2a0004 0%, #110001 100%);
+            border: 2px solid #d4af37;
+            border-radius: 16px;
+            width: 95%;
+            max-width: 450px;
+            padding: 20px 10px;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2), inset 0 0 20px #000;
             position: relative;
         }
 
@@ -33,116 +40,154 @@
             -webkit-background-clip: text;
             color: transparent;
             text-align: center;
-            font-size: 28px;
+            font-size: 22px;
             font-weight: 900;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
             margin-bottom: 5px;
-            text-shadow: 0px 2px 4px rgba(0,0,0,0.8);
+            text-shadow: 0px 2px 4px rgba(0,0,0,0.9);
         }
 
         .session-info {
             text-align: center;
-            color: #fff;
-            font-size: 16px;
-            margin-bottom: 25px;
+            color: #aaa;
+            font-size: 14px;
+            margin-bottom: 20px;
             font-weight: 500;
         }
 
         .main-display {
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
             align-items: center;
-            padding: 0 30px;
+            gap: 20px;
+            padding: 10px 0;
         }
 
-        .side-text {
-            font-size: 60px;
-            font-weight: 900;
-            color: #1a0002;
-            -webkit-text-stroke: 1px #d4af37;
-            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
-            letter-spacing: 5px;
-            opacity: 0.8;
-            transition: all 0.3s ease;
-        }
-
-        .side-text.active {
-            color: #ffd700;
-            -webkit-text-stroke: 0;
-            text-shadow: 0 0 20px #ffd700;
-            opacity: 1;
-            transform: scale(1.1);
-        }
-
-        .dice-container {
+        .dice-wrapper {
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 30px;
-            font-weight: bold;
-            color: #d4af37;
+            justify-content: center;
+            gap: 15px;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 15px 20px;
+            border-radius: 15px;
+            border: 1px solid #4a0000;
         }
 
         .dice {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, #e60000, #990000);
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #cc0000, #800000);
             border-radius: 10px;
             display: grid;
             grid-template-areas:
                 "a . c"
                 "d e f"
                 "g . i";
-            padding: 8px;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.5), 0 5px 10px rgba(0,0,0,0.8);
+            padding: 6px;
+            box-shadow: inset 0 0 8px rgba(0,0,0,0.6), 0 4px 8px rgba(0,0,0,0.9);
             border: 1px solid #ff4d4d;
+            transition: transform 0.1s;
         }
 
         .dot {
-            width: 12px;
-            height: 12px;
+            width: 9px;
+            height: 9px;
             background-color: #fff;
             border-radius: 50%;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.4);
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
             display: none;
         }
 
-        .total-score {
-            font-size: 55px;
+        .result-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 0 15px;
+        }
+
+        .side-text {
+            font-size: 32px;
             font-weight: 900;
+            color: #1a0002;
+            -webkit-text-stroke: 1px #88651a;
+            letter-spacing: 2px;
+            opacity: 0.5;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .side-text.active {
             color: #ffd700;
-            margin-left: 10px;
-            text-shadow: 0 2px 5px #000;
+            -webkit-text-stroke: 0;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+            opacity: 1;
+            transform: scale(1.2);
+        }
+
+        .total-score {
+            font-size: 40px;
+            font-weight: 900;
+            color: #fff;
+            text-shadow: 0 2px 10px rgba(255, 255, 255, 0.5);
+            background: rgba(255, 215, 0, 0.1);
+            padding: 5px 15px;
+            border-radius: 10px;
+            border: 1px solid #d4af37;
         }
 
         .action-area {
             text-align: center;
-            margin-top: 40px;
+            margin-top: 30px;
         }
 
         button {
             background: linear-gradient(180deg, #ffd700 0%, #b8860b 100%);
             color: #2b0000;
             border: none;
-            padding: 15px 40px;
-            font-size: 20px;
+            padding: 16px 30px;
+            font-size: 18px;
             font-weight: 900;
             border-radius: 30px;
             cursor: pointer;
             text-transform: uppercase;
-            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
-            transition: all 0.2s;
+            box-shadow: 0 6px 15px rgba(212, 175, 55, 0.3);
+            width: 90%;
+            transition: all 0.1s;
             border: 2px solid #fff;
         }
 
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.6);
+        button:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 5px rgba(212, 175, 55, 0.5);
         }
 
-        button:active {
-            transform: translateY(2px);
+        button:disabled {
+            background: linear-gradient(180deg, #555, #333);
+            color: #888;
+            border-color: #666;
+            box-shadow: none;
+            pointer-events: none;
+        }
+
+        /* Hiệu ứng rung lắc xúc xắc */
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-5deg); }
+            20% { transform: translate(-3px, 0px) rotate(5deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(5deg); }
+            50% { transform: translate(-1px, 2px) rotate(-5deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-5deg); }
+            80% { transform: translate(-1px, -1px) rotate(5deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-5deg); }
+        }
+
+        .shaking {
+            animation: shake 0.4s infinite;
         }
     </style>
 </head>
@@ -150,12 +195,10 @@
 
     <div class="game-board">
         <div class="header-title">Thống Kê Phiên</div>
-        <div class="session-info">#3175366 (15-07-2026)</div>
+        <div class="session-info" id="sessionInfo">Đang tải...</div>
 
         <div class="main-display">
-            <div class="side-text" id="textTai">TÀY</div>
-            
-            <div class="dice-container">
+            <div class="dice-wrapper">
                 <div class="dice" id="dice1">
                     <div class="dot" style="grid-area: a;"></div>
                     <div class="dot" style="grid-area: c;"></div>
@@ -165,7 +208,6 @@
                     <div class="dot" style="grid-area: g;"></div>
                     <div class="dot" style="grid-area: i;"></div>
                 </div>
-                <span>+</span>
                 <div class="dice" id="dice2">
                     <div class="dot" style="grid-area: a;"></div>
                     <div class="dot" style="grid-area: c;"></div>
@@ -175,7 +217,6 @@
                     <div class="dot" style="grid-area: g;"></div>
                     <div class="dot" style="grid-area: i;"></div>
                 </div>
-                <span>+</span>
                 <div class="dice" id="dice3">
                     <div class="dot" style="grid-area: a;"></div>
                     <div class="dot" style="grid-area: c;"></div>
@@ -185,20 +226,44 @@
                     <div class="dot" style="grid-area: g;"></div>
                     <div class="dot" style="grid-area: i;"></div>
                 </div>
-                <span>=</span>
-                <div class="total-score" id="totalScore">?</div>
             </div>
 
-            <div class="side-text" id="textXiu">XẺO</div>
+            <div class="result-container">
+                <div class="side-text" id="textTai">TÀY</div>
+                <div class="total-score" id="totalScore">?</div>
+                <div class="side-text" id="textXiu">XẺO</div>
+            </div>
         </div>
 
         <div class="action-area">
-            <button onclick="rollAndSpeak()">Random & Đọc Đáp Án</button>
+            <button id="rollBtn" onclick="startRoll()">Random & Đọc Đáp Án</button>
         </div>
     </div>
 
     <script>
-        // Mảng cấu hình hiển thị các chấm trên xúc xắc
+        // 1. QUẢN LÝ PHIÊN (LOCALSTORAGE)
+        let currentSession = localStorage.getItem('gameSessionId');
+        if (!currentSession) {
+            currentSession = 3175366;
+            localStorage.setItem('gameSessionId', currentSession);
+        } else {
+            currentSession = parseInt(currentSession);
+        }
+
+        function getCurrentDate() {
+            const today = new Date();
+            const dd = String(today.getDate()).padStart(2, '0');
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const yyyy = today.getFullYear();
+            return `${dd}-${mm}-${yyyy}`;
+        }
+
+        function updateSessionDisplay() {
+            document.getElementById('sessionInfo').innerText = `#${currentSession} (${getCurrentDate()})`;
+        }
+        updateSessionDisplay();
+
+        // 2. CẤU HÌNH XÚC XẮC
         const diceFaces = {
             1: ['e'],
             2: ['a', 'i'],
@@ -211,73 +276,80 @@
         function drawDice(diceElementId, number) {
             const dice = document.getElementById(diceElementId);
             const dots = dice.getElementsByClassName('dot');
-            
-            // Ẩn tất cả chấm
-            for(let dot of dots) {
-                dot.style.display = 'none';
-            }
-
-            // Hiển thị chấm theo cấu hình
+            for(let dot of dots) dot.style.display = 'none';
             const activeDots = diceFaces[number];
             for(let dot of dots) {
-                if (activeDots.includes(dot.style.gridArea)) {
-                    dot.style.display = 'block';
-                }
+                if (activeDots.includes(dot.style.gridArea)) dot.style.display = 'block';
             }
         }
 
-        function rollAndSpeak() {
-            // Tắt hiệu ứng nháy sáng cũ
+        // 3. HIỆU ỨNG & XỬ LÝ LẮC
+        function startRoll() {
+            const btn = document.getElementById('rollBtn');
+            btn.disabled = true; // Khóa nút khi đang lắc
+            
+            // Cập nhật phiên trước khi lắc
+            currentSession++;
+            localStorage.setItem('gameSessionId', currentSession);
+            updateSessionDisplay();
+
+            // Reset UI
             document.getElementById('textTai').classList.remove('active');
             document.getElementById('textXiu').classList.remove('active');
+            document.getElementById('totalScore').innerText = "?";
 
-            // Random 3 viên xúc xắc
+            // Thêm hiệu ứng rung
+            const dices = [document.getElementById('dice1'), document.getElementById('dice2'), document.getElementById('dice3')];
+            dices.forEach(d => d.classList.add('shaking'));
+
+            // Delay 600ms tạo cảm giác hồi hộp
+            setTimeout(() => {
+                dices.forEach(d => d.classList.remove('shaking'));
+                finishRoll();
+                btn.disabled = false;
+            }, 600);
+        }
+
+        function finishRoll() {
             const v1 = Math.floor(Math.random() * 6) + 1;
             const v2 = Math.floor(Math.random() * 6) + 1;
             const v3 = Math.floor(Math.random() * 6) + 1;
-            
             const total = v1 + v2 + v3;
             let resultText = "";
 
-            // Vẽ xúc xắc
             drawDice('dice1', v1);
             drawDice('dice2', v2);
             drawDice('dice3', v3);
             
-            // Hiển thị tổng
             document.getElementById('totalScore').innerText = total;
 
-            // Xác định Tài/Xỉu và bật hiệu ứng
             if (total >= 3 && total <= 10) {
-                resultText = "Xỉu";
+                resultText = "Xẻo";
                 document.getElementById('textXiu').classList.add('active');
             } else {
-                resultText = "Tài";
+                resultText = "Tày";
                 document.getElementById('textTai').classList.add('active');
             }
 
-            // Phát âm thanh đọc đáp án
-            speakText(`Tổng ${total} điểm. ${resultText}`);
+            speakText(`Tổng ${total}. ${resultText}`);
         }
 
+        // 4. CHUYỂN VĂN BẢN THÀNH GIỌNG NÓI
         function speakText(text) {
-            // Hủy các giọng đọc đang chờ để không bị đè âm
             window.speechSynthesis.cancel();
-            
             const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'vi-VN'; // Set ngôn ngữ tiếng Việt
-            utterance.rate = 1.0; // Tốc độ đọc
-            utterance.pitch = 1.0; // Cao độ
-            
+            utterance.lang = 'vi-VN'; 
+            utterance.rate = 1.0; 
+            utterance.pitch = 1.1; // Chỉnh cao độ một chút cho giọng rõ hơn
             window.speechSynthesis.speak(utterance);
         }
 
-        // Vẽ mặc định lúc đầu (như trong ảnh là 1 - 5 - 5 = 11)
-        drawDice('dice1', 1);
-        drawDice('dice2', 5);
-        drawDice('dice3', 5);
-        document.getElementById('totalScore').innerText = "11";
-        document.getElementById('textTai').classList.add('active');
+        // 5. KHỞI TẠO MẶC ĐỊNH
+        drawDice('dice1', 4);
+        drawDice('dice2', 2);
+        drawDice('dice3', 1);
+        document.getElementById('totalScore').innerText = "7";
+        document.getElementById('textXiu').classList.add('active');
     </script>
 </body>
 </html>
