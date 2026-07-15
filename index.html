@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Bot Random Tài Xỉu</title>
+    <title>Mô Phỏng Xúc Xắc Boardgame</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500;700;900&display=swap');
 
@@ -13,7 +13,7 @@
         }
 
         body {
-            background-color: #050505; /* Nền đen sâu tối ưu cho màn hình giảm độ sáng */
+            background-color: #050505;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -25,18 +25,18 @@
         }
 
         .game-board {
-            background: linear-gradient(180deg, #2a0004 0%, #110001 100%);
-            border: 2px solid #d4af37;
+            background: linear-gradient(180deg, #1e1e1e 0%, #0d0d0d 100%);
+            border: 2px solid #555;
             border-radius: 16px;
             width: 95%;
             max-width: 450px;
             padding: 20px 10px;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2), inset 0 0 20px #000;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1), inset 0 0 20px #000;
             position: relative;
         }
 
         .header-title {
-            background: linear-gradient(90deg, #b8860b, #ffd700, #b8860b);
+            background: linear-gradient(90deg, #ccc, #fff, #ccc);
             -webkit-background-clip: text;
             color: transparent;
             text-align: center;
@@ -45,14 +45,13 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 5px;
-            text-shadow: 0px 2px 4px rgba(0,0,0,0.9);
         }
 
         .session-info {
             text-align: center;
-            color: #aaa;
+            color: #888;
             font-size: 14px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             font-weight: 500;
         }
 
@@ -60,8 +59,8 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 20px;
-            padding: 10px 0;
+            gap: 15px;
+            padding: 5px 0;
         }
 
         .dice-wrapper {
@@ -69,16 +68,16 @@
             align-items: center;
             justify-content: center;
             gap: 15px;
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0.5);
             padding: 15px 20px;
             border-radius: 15px;
-            border: 1px solid #4a0000;
+            border: 1px solid #333;
         }
 
         .dice {
             width: 45px;
             height: 45px;
-            background: linear-gradient(135deg, #cc0000, #800000);
+            background: linear-gradient(135deg, #e0e0e0, #999);
             border-radius: 10px;
             display: grid;
             grid-template-areas:
@@ -86,17 +85,17 @@
                 "d e f"
                 "g . i";
             padding: 6px;
-            box-shadow: inset 0 0 8px rgba(0,0,0,0.6), 0 4px 8px rgba(0,0,0,0.9);
-            border: 1px solid #ff4d4d;
+            box-shadow: inset 0 0 8px rgba(0,0,0,0.4), 0 4px 8px rgba(0,0,0,0.8);
+            border: 1px solid #fff;
             transition: transform 0.1s;
         }
 
         .dot {
             width: 9px;
             height: 9px;
-            background-color: #fff;
+            background-color: #111;
             border-radius: 50%;
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+            box-shadow: inset 0 1px 2px rgba(255,255,255,0.8);
             display: none;
         }
 
@@ -111,40 +110,88 @@
         .side-text {
             font-size: 32px;
             font-weight: 900;
-            color: #1a0002;
-            -webkit-text-stroke: 1px #88651a;
+            color: #222;
+            -webkit-text-stroke: 1px #555;
             letter-spacing: 2px;
             opacity: 0.5;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         .side-text.active {
-            color: #ffd700;
+            color: #4ade80;
             -webkit-text-stroke: 0;
-            text-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+            text-shadow: 0 0 15px rgba(74, 222, 128, 0.6);
             opacity: 1;
             transform: scale(1.2);
+        }
+        
+        #textTai.active {
+            color: #f87171;
+            text-shadow: 0 0 15px rgba(248, 113, 113, 0.6);
         }
 
         .total-score {
             font-size: 40px;
             font-weight: 900;
             color: #fff;
-            text-shadow: 0 2px 10px rgba(255, 255, 255, 0.5);
-            background: rgba(255, 215, 0, 0.1);
+            text-shadow: 0 2px 10px rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
             padding: 5px 15px;
             border-radius: 10px;
-            border: 1px solid #d4af37;
+            border: 1px solid #555;
         }
+
+        /* --- PHẦN CSS TỈ LỆ % --- */
+        .probability-container {
+            width: 90%;
+            margin: 10px auto 0;
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .prob-text-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .prob-cao { color: #f87171; }
+        .prob-thap { color: #4ade80; }
+
+        .prob-bar-wrapper {
+            width: 100%;
+            height: 8px;
+            background: #222;
+            border-radius: 4px;
+            overflow: hidden;
+            display: flex;
+        }
+
+        .prob-bar-cao {
+            height: 100%;
+            background: linear-gradient(90deg, #b91c1c, #f87171);
+            transition: width 0.5s ease-in-out;
+        }
+
+        .prob-bar-thap {
+            height: 100%;
+            background: linear-gradient(90deg, #4ade80, #15803d);
+            transition: width 0.5s ease-in-out;
+        }
+        /* --- KẾT THÚC PHẦN CSS TỈ LỆ % --- */
 
         .action-area {
             text-align: center;
-            margin-top: 30px;
+            margin-top: 20px;
         }
 
         button {
-            background: linear-gradient(180deg, #ffd700 0%, #b8860b 100%);
-            color: #2b0000;
+            background: linear-gradient(180deg, #e2e8f0 0%, #94a3b8 100%);
+            color: #0f172a;
             border: none;
             padding: 16px 30px;
             font-size: 18px;
@@ -152,7 +199,7 @@
             border-radius: 30px;
             cursor: pointer;
             text-transform: uppercase;
-            box-shadow: 0 6px 15px rgba(212, 175, 55, 0.3);
+            box-shadow: 0 6px 15px rgba(255, 255, 255, 0.1);
             width: 90%;
             transition: all 0.1s;
             border: 2px solid #fff;
@@ -160,18 +207,17 @@
 
         button:active {
             transform: scale(0.95);
-            box-shadow: 0 2px 5px rgba(212, 175, 55, 0.5);
+            box-shadow: 0 2px 5px rgba(255, 255, 255, 0.2);
         }
 
         button:disabled {
-            background: linear-gradient(180deg, #555, #333);
-            color: #888;
-            border-color: #666;
+            background: linear-gradient(180deg, #333, #222);
+            color: #666;
+            border-color: #444;
             box-shadow: none;
             pointer-events: none;
         }
 
-        /* Hiệu ứng rung lắc xúc xắc */
         @keyframes shake {
             0% { transform: translate(1px, 1px) rotate(0deg); }
             10% { transform: translate(-1px, -2px) rotate(-5deg); }
@@ -194,7 +240,7 @@
 <body>
 
     <div class="game-board">
-        <div class="header-title">Thống Kê Phiên</div>
+        <div class="header-title">Lượt Gieo</div>
         <div class="session-info" id="sessionInfo">Đang tải...</div>
 
         <div class="main-display">
@@ -229,23 +275,34 @@
             </div>
 
             <div class="result-container">
-                <div class="side-text" id="textTai">TÀY</div>
+                <div class="side-text" id="textTai">CAO</div>
                 <div class="total-score" id="totalScore">?</div>
-                <div class="side-text" id="textXiu">XẺO</div>
+                <div class="side-text" id="textXiu">THẤP</div>
+            </div>
+        </div>
+
+        <div class="probability-container">
+            <div class="prob-text-row">
+                <span class="prob-cao" id="textProbCao">CAO: 50%</span>
+                <span style="color: #666; font-size: 12px;">DỰ ĐOÁN LƯỢT TỚI</span>
+                <span class="prob-thap" id="textProbThap">THẤP: 50%</span>
+            </div>
+            <div class="prob-bar-wrapper">
+                <div class="prob-bar-cao" id="barCao" style="width: 50%;"></div>
+                <div class="prob-bar-thap" id="barThap" style="width: 50%;"></div>
             </div>
         </div>
 
         <div class="action-area">
-            <button id="rollBtn" onclick="startRoll()">Random & Đọc Đáp Án</button>
+            <button id="rollBtn" onclick="startRoll()">Gieo & Đọc Điểm</button>
         </div>
     </div>
 
     <script>
-        // 1. QUẢN LÝ PHIÊN (LOCALSTORAGE)
-        let currentSession = localStorage.getItem('gameSessionId');
+        let currentSession = localStorage.getItem('boardGameSessionId');
         if (!currentSession) {
-            currentSession = 3175366;
-            localStorage.setItem('gameSessionId', currentSession);
+            currentSession = 1;
+            localStorage.setItem('boardGameSessionId', currentSession);
         } else {
             currentSession = parseInt(currentSession);
         }
@@ -263,7 +320,6 @@
         }
         updateSessionDisplay();
 
-        // 2. CẤU HÌNH XÚC XẮC
         const diceFaces = {
             1: ['e'],
             2: ['a', 'i'],
@@ -283,26 +339,34 @@
             }
         }
 
-        // 3. HIỆU ỨNG & XỬ LÝ LẮC
+        // HÀM RANDOM TỈ LỆ %
+        function generateRandomProbability() {
+            // Random ra tỉ lệ từ 30% đến 70% để luôn có sự chênh lệch sinh động
+            const percentCao = Math.floor(Math.random() * 41) + 30; 
+            const percentThap = 100 - percentCao;
+
+            document.getElementById('textProbCao').innerText = `CAO: ${percentCao}%`;
+            document.getElementById('textProbThap').innerText = `THẤP: ${percentThap}%`;
+
+            document.getElementById('barCao').style.width = `${percentCao}%`;
+            document.getElementById('barThap').style.width = `${percentThap}%`;
+        }
+
         function startRoll() {
             const btn = document.getElementById('rollBtn');
-            btn.disabled = true; // Khóa nút khi đang lắc
+            btn.disabled = true; 
             
-            // Cập nhật phiên trước khi lắc
             currentSession++;
-            localStorage.setItem('gameSessionId', currentSession);
+            localStorage.setItem('boardGameSessionId', currentSession);
             updateSessionDisplay();
 
-            // Reset UI
             document.getElementById('textTai').classList.remove('active');
             document.getElementById('textXiu').classList.remove('active');
             document.getElementById('totalScore').innerText = "?";
 
-            // Thêm hiệu ứng rung
             const dices = [document.getElementById('dice1'), document.getElementById('dice2'), document.getElementById('dice3')];
             dices.forEach(d => d.classList.add('shaking'));
 
-            // Delay 600ms tạo cảm giác hồi hộp
             setTimeout(() => {
                 dices.forEach(d => d.classList.remove('shaking'));
                 finishRoll();
@@ -324,32 +388,35 @@
             document.getElementById('totalScore').innerText = total;
 
             if (total >= 3 && total <= 10) {
-                resultText = "Xẻo";
+                resultText = "Thấp";
                 document.getElementById('textXiu').classList.add('active');
             } else {
-                resultText = "Tày";
+                resultText = "Cao";
                 document.getElementById('textTai').classList.add('active');
             }
 
             speakText(`Tổng ${total}. ${resultText}`);
+            
+            // Cập nhật tỉ lệ dự đoán cho ván tiếp theo sau khi có kết quả
+            generateRandomProbability();
         }
 
-        // 4. CHUYỂN VĂN BẢN THÀNH GIỌNG NÓI
         function speakText(text) {
             window.speechSynthesis.cancel();
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = 'vi-VN'; 
             utterance.rate = 1.0; 
-            utterance.pitch = 1.1; // Chỉnh cao độ một chút cho giọng rõ hơn
+            utterance.pitch = 1.1; 
             window.speechSynthesis.speak(utterance);
         }
 
-        // 5. KHỞI TẠO MẶC ĐỊNH
+        // KHỞI TẠO MẶC ĐỊNH LẦN ĐẦU
         drawDice('dice1', 4);
         drawDice('dice2', 2);
         drawDice('dice3', 1);
         document.getElementById('totalScore').innerText = "7";
         document.getElementById('textXiu').classList.add('active');
+        generateRandomProbability(); // Tạo tỉ lệ % lúc mới vào web
     </script>
 </body>
 </html>
