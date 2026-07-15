@@ -141,7 +141,6 @@
             border: 1px solid #555;
         }
 
-        /* --- PHẦN CSS TỈ LỆ % --- */
         .probability-container {
             width: 90%;
             margin: 10px auto 0;
@@ -182,7 +181,6 @@
             background: linear-gradient(90deg, #4ade80, #15803d);
             transition: width 0.5s ease-in-out;
         }
-        /* --- KẾT THÚC PHẦN CSS TỈ LỆ % --- */
 
         .action-area {
             text-align: center;
@@ -299,10 +297,11 @@
     </div>
 
     <script>
-        let currentSession = localStorage.getItem('boardGameSessionId');
+        // Đã thay đổi key lưu trữ thành 'boardGameSessionId_v2' để reset cache và cập nhật mốc mới
+        let currentSession = localStorage.getItem('boardGameSessionId_v2');
         if (!currentSession) {
-            currentSession = 1;
-            localStorage.setItem('boardGameSessionId', currentSession);
+            currentSession = 3175381; // Mốc phiên mới
+            localStorage.setItem('boardGameSessionId_v2', currentSession);
         } else {
             currentSession = parseInt(currentSession);
         }
@@ -339,9 +338,7 @@
             }
         }
 
-        // HÀM RANDOM TỈ LỆ %
         function generateRandomProbability() {
-            // Random ra tỉ lệ từ 30% đến 70% để luôn có sự chênh lệch sinh động
             const percentCao = Math.floor(Math.random() * 41) + 30; 
             const percentThap = 100 - percentCao;
 
@@ -357,7 +354,8 @@
             btn.disabled = true; 
             
             currentSession++;
-            localStorage.setItem('boardGameSessionId', currentSession);
+            // Cập nhật key mới khi bấm nút
+            localStorage.setItem('boardGameSessionId_v2', currentSession);
             updateSessionDisplay();
 
             document.getElementById('textTai').classList.remove('active');
@@ -397,7 +395,6 @@
 
             speakText(`Tổng ${total}. ${resultText}`);
             
-            // Cập nhật tỉ lệ dự đoán cho ván tiếp theo sau khi có kết quả
             generateRandomProbability();
         }
 
@@ -410,13 +407,12 @@
             window.speechSynthesis.speak(utterance);
         }
 
-        // KHỞI TẠO MẶC ĐỊNH LẦN ĐẦU
         drawDice('dice1', 4);
         drawDice('dice2', 2);
         drawDice('dice3', 1);
         document.getElementById('totalScore').innerText = "7";
         document.getElementById('textXiu').classList.add('active');
-        generateRandomProbability(); // Tạo tỉ lệ % lúc mới vào web
+        generateRandomProbability();
     </script>
 </body>
 </html>
